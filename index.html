@@ -3,13 +3,49 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>SmartAttend</title>
+    <title>SmartAttend Attendance Management System</title>
+    <link rel="stylesheet" href="styles.css">
+    <script src="script.js" defer></script>
 </head>
 <body>
-    <h1>Welcome to SmartAttend Application</h1>
-    <p>This application is designed to streamline the attendance tracking process.</p>
-    <script>
-        // SmartAttend application logic goes here
-    </script>
+    <header>
+        <h1>SmartAttend</h1>
+        <nav>
+            <ul>
+                <li><a href="#">Home</a></li>
+                <li><a href="#">Teacher Portal</a></li>
+                <li><a href="#">Student Portal</a></li>
+                <li><a href="#">About</a></li>
+            </ul>
+        </nav>
+    </header>
+    <main>
+        <section id="teacher-portal">
+            <h2>Teacher Portal</h2>
+            <form id="attendance-form">
+                <label for="class">Class:</label>
+                <select id="class">
+                    <option value="math">Mathematics</option>
+                    <option value="science">Science</option>
+                </select>
+                <label for="date">Date:</label>
+                <input type="date" id="date" required>
+                <button type="submit">Take Attendance</button>
+            </form>
+            <div id="attendance-result"></div>
+        </section>
+        <section id="student-portal">
+            <h2>Student Portal</h2>
+            <form id="student-login">
+                <label for="student-id">Student ID:</label>
+                <input type="text" id="student-id" required>
+                <button type="submit">Login</button>
+            </form>
+            <div id="student-dashboard"></div>
+        </section>
+    </main>
+    <footer>
+        <p>&copy; 2026 SmartAttend. All rights reserved.</p>
+    </footer>
 </body>
 </html>
