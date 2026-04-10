@@ -1,0 +1,174 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SmartAttend Application</title>
+    <style>
+        body { font-family: Arial, sans-serif; padding: 20px; }
+        .hidden { display: none; }
+        .container { max-width: 600px; margin: auto; }
+        .stat-card { border: 1px solid #ccc; padding: 20px; margin: 10px; text-align: center; }
+        .portal, .dashboard, .student-management, .attendance { margin-top: 20px; }
+        .modal { display: none; position: fixed; z-index: 1; left: 0; top: 0; width: 100%; height: 100%; overflow: auto; background-color: rgb(0,0,0); background-color: rgba(0,0,0,0.4); padding-top: 60px;}
+        .modal-content { background-color: #fefefe; margin: 5% auto; padding: 20px; border: 1px solid #888; width: 80%;}
+        .close { color: #aaaaaa; float: right; font-size: 28px; font-weight: bold; }
+        .close:hover, .close:focus { color: red; cursor: pointer; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div id="portal" class="portal">
+            <h2>SmartAttend Portal</h2>
+            <button onclick="selectRole('teacher')">Login as Teacher</button>
+            <button onclick="selectRole('student')">Login as Student</button>
+        </div>
+
+        <div id="login" class="hidden">
+            <h2>Login</h2>
+            <input type="text" id="username" placeholder="Username">
+            <button onclick="login()">Login</button>
+        </div>
+
+        <div id="dashboard" class="dashboard hidden">
+            <h2>Teacher Dashboard</h2>
+            <div class="stat-card">Total Students: <span id="total-students">0</span></div>
+            <div class="stat-card">Attendance Today: <span id="attendance-today">0%</span></div>
+            <div class="stat-card">Classes Held: <span id="classes-held">0</span></div>
+            <div class="stat-card">Students Passed: <span id="students-passed">0</span></div>
+            <button onclick="manageStudents()">Manage Students</button>
+            <button onclick="markAttendance()">Mark Attendance</button>
+            <button onclick="viewReports()">View Reports</button>
+        </div>
+
+        <div id="student-management" class="student-management hidden">
+            <h2>Manage Students</h2>
+            <button onclick="openModal()">Add Student</button>
+            <ul id="student-list"></ul>
+        </div>
+
+        <div id="attendance" class="attendance hidden">
+            <h2>Attendance Marking</h2>
+            <button onclick="viewAttendance()">View Attendance</button>
+        </div>
+
+        <div id="reports" class="hidden">
+            <h2>Reports & Analytics</h2>
+            <button onclick="generateReports()">Generate Reports</button>
+        </div>
+        
+        <!-- Modals -->
+        <div id="addEditModal" class="modal">
+            <div class="modal-content">
+                <span class="close" onclick="closeModal()">&times;</span>
+                <h2>Add/Edit Student</h2>
+                <input type="text" id="student-name" placeholder="Student Name">
+                <button onclick="saveStudent()">Save</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let role = null;
+        let students = JSON.parse(localStorage.getItem('students')) || [];
+
+        function selectRole(selectedRole) {
+            role = selectedRole;
+            document.getElementById('portal').classList.add('hidden');
+            document.getElementById('login').classList.remove('hidden');
+        }
+
+        function login() {
+            const username = document.getElementById('username').value;
+            if (username) {
+                alert(`${role.charAt(0).toUpperCase() + role.slice(1)} ${username} logged in.`);
+                document.getElementById('login').classList.add('hidden');
+                document.getElementById('dashboard').classList.remove('hidden');
+                updateStats();
+            }
+        }
+
+        function updateStats() {
+            document.getElementById('total-students').innerText = students.length;
+            const attendanceToday = students.length ? ((Math.random() * 100).toFixed(2) + '%') : "0%";
+            document.getElementById('attendance-today').innerText = attendanceToday;
+            document.getElementById('classes-held').innerText = Math.floor(Math.random() * 30);
+            document.getElementById('students-passed').innerText = Math.floor(students.length * 0.7);
+        }
+
+        function manageStudents() {
+            document.getElementById('dashboard').classList.add('hidden');
+            document.getElementById('student-management').classList.remove('hidden');
+            renderStudentList();
+        }
+
+        function renderStudentList() {
+            const studentList = document.getElementById('student-list');
+            studentList.innerHTML = '';
+            students.forEach((student, index) => {
+                const li = document.createElement('li');
+                li.innerText = student;
+                li.appendChild(createEditButton(index));
+                li.appendChild(createDeleteButton(index));
+                studentList.appendChild(li);
+            });
+        }
+
+        function createEditButton(index) {
+            const button = document.createElement('button');
+            button.innerText = 'Edit';
+            button.onclick = () => openModal(index);
+            return button;
+        }
+
+        function createDeleteButton(index) {
+            const button = document.createElement('button');
+            button.innerText = 'Delete';
+            button.onclick = () => deleteStudent(index);
+            return button;
+        }
+
+        function openModal(index) {
+            if (index >= 0) {
+                document.getElementById('student-name').value = students[index];
+            } else {
+                document.getElementById('student-name').value = '';
+            }
+            document.getElementById('addEditModal').style.display = 'block';
+        }
+
+        function closeModal() {
+            document.getElementById('addEditModal').style.display = 'none';
+        }
+
+        function saveStudent() {
+            const name = document.getElementById('student-name').value;
+            if (name) {
+                students.push(name);
+                localStorage.setItem('students', JSON.stringify(students));
+                renderStudentList();
+                closeModal();
+            }
+        }
+
+        function deleteStudent(index) {
+            students.splice(index, 1);
+            localStorage.setItem('students', JSON.stringify(students));
+            renderStudentList();
+        }
+
+        function markAttendance() {
+            alert("Attendance marking interface");
+        }
+
+        function viewReports() {
+            document.getElementById('dashboard').classList.add('hidden');
+            document.getElementById('reports').classList.remove('hidden');
+        }
+
+        function generateReports() {
+            alert("Reports generated");
+        }
+    </script>
+</body>
+</html>
